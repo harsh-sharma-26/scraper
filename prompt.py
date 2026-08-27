@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request
 import re
+import json
 
 from parsing import process_words
+from myscheme_api import fetch_matching_schemes
 
 app = Flask(__name__)  # Flask app ka object bana rahe hain
 
@@ -25,9 +27,9 @@ def search():
     words_list = re.findall(r'\w+', user_input)
     #parsing.py ko data bhejna:
     result = process_words(words_list)
-    print(result)
+    schemes = fetch_matching_schemes(result)
     # wapas same page render karo, result variable ke saath
-    return render_template('index.html', result=words_list)
+    return render_template('index.html', result=schemes)
 
 if __name__ == '__main__':
     app.run(debug=True)  # debug=True se error dikhte hain aur auto-reload hota hai
