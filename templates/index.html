@@ -1,20 +1,1232 @@
-<!doctype html>
-<html>
-  <head>
-    <title>Search Demo</title>
-  </head>
-  <body>
-    <h2>Search Kuch Bhi</h2>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
 
-    <!-- Ye form data ko /search route par POST method se bhejega -->
-    <form action="/search" method="POST">
-      <input type="text" name="query" placeholder="Yahan likho..." />
-      <button type="submit">Search</button>
-    </form>
+<head>
+    <meta charset="UTF-8">
 
-    <!-- Agar result mila hai to yaha dikhayenge -->
-    {% if result %}
-    <h3>Tumne search kiya: {{ result }}</h3>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Government Scheme Finder</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="topbar">
+
+        <div class="topbar-title">
+            Government Scheme Finder
+        </div>
+
+        <button
+            type="button"
+            class="theme-toggle"
+            id="themeToggle">
+
+            <span id="themeIcon">☀</span>
+            <span id="themeText">Light mode</span>
+
+        </button>
+
+    </header>
+
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main-container">
+
+
+        <!-- ================= HERO ================= -->
+
+        <section class="hero">
+
+            <div class="hero-badge">
+                GOVERNMENT BENEFITS
+            </div>
+
+            <h1>
+                Find government schemes
+                <span>you're eligible for.</span>
+            </h1>
+
+            <p>
+                Tell us about yourself, your education and your
+                financial background. We'll identify government
+                schemes that may match your profile.
+            </p>
+
+        </section>
+
+
+
+        <!-- ================= FINDER CARD ================= -->
+
+        <section class="finder-card">
+
+
+            <!-- CARD HEADER -->
+
+            <div class="finder-header">
+
+                <div>
+
+                    <div class="small-label">
+                        YOUR PROFILE
+                    </div>
+
+                    <h2>
+                        Tell us about yourself
+                    </h2>
+
+                    <p>
+                        The more information you provide,
+                        the better we can match schemes.
+                    </p>
+
+                </div>
+
+
+                <!-- INPUT MODE -->
+
+                <div class="mode-switch">
+
+                    <button
+                        type="button"
+                        id="formModeBtn"
+                        class="mode-btn active"
+                        onclick="showForm()">
+
+                        Fill Form
+
+                    </button>
+
+                    <button
+                        type="button"
+                        id="textModeBtn"
+                        class="mode-btn"
+                        onclick="showTextMode()">
+
+                        Describe Yourself
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FORM MODE
+            ================================================== -->
+
+            <div id="formMode">
+
+                <form
+                    action="/search"
+                    method="POST"
+                    id="profileForm">
+
+
+                    <!-- Hidden query for existing backend -->
+
+                    <input
+                        type="hidden"
+                        name="query"
+                        id="generatedQuery">
+
+
+
+                    <!-- ================= SECTION 1 ================= -->
+
+                    <div class="form-section">
+
+                        <div class="section-heading">
+
+                            <div class="section-number">
+                                01
+                            </div>
+
+                            <div>
+                                <h3>Basic Information</h3>
+
+                                <p>
+                                    Basic details about you
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+
+                            <!-- AGE -->
+
+                            <div class="field">
+
+                                <label for="age">
+                                    Age
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="age"
+                                    placeholder="e.g. 24"
+                                    min="1"
+                                    max="120">
+
+                            </div>
+
+
+
+                            <!-- GENDER -->
+
+                            <div class="field">
+
+                                <label for="gender">
+                                    Gender
+                                </label>
+
+                                <select id="gender">
+
+                                    <option value="">
+                                        Select gender
+                                    </option>
+
+                                    <option value="female">
+                                        Female
+                                    </option>
+
+                                    <option value="male">
+                                        Male
+                                    </option>
+
+                                    <option value="other">
+                                        Other
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+
+                            <!-- STATE -->
+
+                            <div class="field">
+
+                                <label for="state">
+                                    State / UT
+                                </label>
+
+                                <select id="state">
+
+                                    <option value="">
+                                        Select state
+                                    </option>
+
+                                    <option>Andhra Pradesh</option>
+                                    <option>Arunachal Pradesh</option>
+                                    <option>Assam</option>
+                                    <option>Bihar</option>
+                                    <option>Chhattisgarh</option>
+                                    <option>Delhi</option>
+                                    <option>Goa</option>
+                                    <option>Gujarat</option>
+                                    <option>Haryana</option>
+                                    <option>Himachal Pradesh</option>
+                                    <option>Jharkhand</option>
+                                    <option>Karnataka</option>
+                                    <option>Kerala</option>
+                                    <option>Madhya Pradesh</option>
+                                    <option>Maharashtra</option>
+                                    <option>Odisha</option>
+                                    <option>Punjab</option>
+                                    <option>Rajasthan</option>
+                                    <option>Tamil Nadu</option>
+                                    <option>Telangana</option>
+                                    <option>Uttar Pradesh</option>
+                                    <option>Uttarakhand</option>
+                                    <option>West Bengal</option>
+
+                                </select>
+
+                            </div>
+
+
+
+                            <!-- RESIDENCE -->
+
+                            <div class="field">
+
+                                <label for="residence">
+                                    Area of Residence
+                                </label>
+
+                                <select id="residence">
+
+                                    <option value="">
+                                        Select area
+                                    </option>
+
+                                    <option value="rural">
+                                        Rural
+                                    </option>
+
+                                    <option value="urban">
+                                        Urban
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ================= SECTION 2 ================= -->
+
+                    <div class="form-section">
+
+                        <div class="section-heading">
+
+                            <div class="section-number">
+                                02
+                            </div>
+
+                            <div>
+                                <h3>Social & Economic Details</h3>
+
+                                <p>
+                                    Information used for eligibility
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+
+                            <!-- CATEGORY -->
+
+                            <div class="field">
+
+                                <label for="category">
+                                    Social Category
+                                </label>
+
+                                <select id="category">
+
+                                    <option value="">
+                                        Select category
+                                    </option>
+
+                                    <option value="SC">
+                                        Scheduled Caste (SC)
+                                    </option>
+
+                                    <option value="ST">
+                                        Scheduled Tribe (ST)
+                                    </option>
+
+                                    <option value="OBC">
+                                        Other Backward Class (OBC)
+                                    </option>
+
+                                    <option value="EWS">
+                                        Economically Weaker Section (EWS)
+                                    </option>
+
+                                    <option value="General">
+                                        General
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+
+                            <!-- INCOME -->
+
+                            <div class="field">
+
+                                <label for="income">
+                                    Annual Family Income
+                                </label>
+
+                                <div class="input-with-prefix">
+
+                                    <span>₹</span>
+
+                                    <input
+                                        type="number"
+                                        id="income"
+                                        placeholder="e.g. 250000">
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- BPL -->
+
+                            <div class="field">
+
+                                <label for="bpl">
+                                    BPL Status
+                                </label>
+
+                                <select id="bpl">
+
+                                    <option value="">
+                                        Select status
+                                    </option>
+
+                                    <option value="yes">
+                                        Yes
+                                    </option>
+
+                                    <option value="no">
+                                        No
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+
+                            <!-- DISABILITY -->
+
+                            <div class="field">
+
+                                <label for="disability">
+                                    Disability Status
+                                </label>
+
+                                <select id="disability">
+
+                                    <option value="">
+                                        Select status
+                                    </option>
+
+                                    <option value="yes">
+                                        Yes
+                                    </option>
+
+                                    <option value="no">
+                                        No
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ================= SECTION 3 ================= -->
+
+                    <div class="form-section">
+
+                        <div class="section-heading">
+
+                            <div class="section-number">
+                                03
+                            </div>
+
+                            <div>
+                                <h3>Education & Occupation</h3>
+
+                                <p>
+                                    Your qualification and current status
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+
+                            <!-- EDUCATION -->
+
+                            <div class="field">
+
+                                <label for="education">
+                                    Highest Qualification
+                                </label>
+
+                                <select id="education">
+
+                                    <option value="">
+                                        Select qualification
+                                    </option>
+
+                                    <option>Below 10th</option>
+                                    <option>10th Pass</option>
+                                    <option>12th Pass</option>
+                                    <option>Diploma</option>
+                                    <option>Graduate</option>
+                                    <option>Post Graduate</option>
+                                    <option>Professional Degree</option>
+                                    <option>PhD</option>
+
+                                </select>
+
+                            </div>
+
+
+
+                            <!-- OCCUPATION -->
+
+                            <div class="field">
+
+                                <label for="occupation">
+                                    Occupation
+                                </label>
+
+                                <select id="occupation">
+
+                                    <option value="">
+                                        Select occupation
+                                    </option>
+
+                                    <option>Student</option>
+                                    <option>Employed</option>
+                                    <option>Self Employed</option>
+                                    <option>Farmer</option>
+                                    <option>Agricultural Worker</option>
+                                    <option>Daily Wage Worker</option>
+                                    <option>Unemployed</option>
+                                    <option>Homemaker</option>
+                                    <option>Other</option>
+
+                                </select>
+
+                            </div>
+
+
+
+                            <!-- STUDENT -->
+
+                            <div class="field">
+
+                                <label for="student">
+                                    Currently a Student?
+                                </label>
+
+                                <select id="student">
+
+                                    <option value="">
+                                        Select
+                                    </option>
+
+                                    <option value="yes">
+                                        Yes
+                                    </option>
+
+                                    <option value="no">
+                                        No
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+
+                            <!-- FARMER -->
+
+                            <div class="field">
+
+                                <label for="farmer">
+                                    Farmer / Agricultural Worker?
+                                </label>
+
+                                <select id="farmer">
+
+                                    <option value="">
+                                        Select
+                                    </option>
+
+                                    <option value="yes">
+                                        Yes
+                                    </option>
+
+                                    <option value="no">
+                                        No
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ================= SECTION 4 ================= -->
+
+                    <div class="form-section">
+
+                        <div class="section-heading">
+
+                            <div class="section-number">
+                                04
+                            </div>
+
+                            <div>
+                                <h3>Additional Details</h3>
+
+                                <p>
+                                    Optional information for better matching
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+
+                            <!-- SENIOR -->
+
+                            <div class="field">
+
+                                <label for="senior">
+                                    Senior Citizen
+                                </label>
+
+                                <select id="senior">
+
+                                    <option value="">
+                                        Select
+                                    </option>
+
+                                    <option value="yes">
+                                        Yes
+                                    </option>
+
+                                    <option value="no">
+                                        No
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+
+                            <!-- MARITAL -->
+
+                            <div class="field">
+
+                                <label for="marital">
+                                    Marital Status
+                                </label>
+
+                                <select id="marital">
+
+                                    <option value="">
+                                        Select status
+                                    </option>
+
+                                    <option>Single</option>
+                                    <option>Married</option>
+                                    <option>Widowed</option>
+                                    <option>Divorced</option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ================= SUBMIT ================= -->
+
+                    <div class="submit-area">
+
+                        <div class="privacy-note">
+                            <span>🔒</span>
+
+                            Your information is used only
+                            for scheme matching.
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="find-button"
+                            id="findButton">
+
+                            Find My Schemes
+
+                            <span>→</span>
+
+                        </button>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 NATURAL LANGUAGE MODE
+            ================================================== -->
+
+            <div
+                id="textMode"
+                class="text-mode"
+                style="display:none;">
+
+
+                <div class="text-content">
+
+                    <div class="text-icon">
+                        ✦
+                    </div>
+
+
+                    <h3>
+                        Describe yourself in your own words
+                    </h3>
+
+
+                    <p>
+                        Tell us about your age, education, income,
+                        location, category and occupation.
+                    </p>
+
+
+                    <form
+                        action="/search"
+                        method="POST"
+                        id="textForm">
+
+
+                        <textarea
+                            name="query"
+                            placeholder="Example: I am a 24 year old female from rural Uttar Pradesh, belonging to SC category. I am currently pursuing graduation and my family income is around ₹2 lakh per year..."
+                            required></textarea>
+
+
+                        <div class="textarea-hint">
+
+                            ✦ The system will identify relevant
+                            information from your description.
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="find-button">
+
+                            Find My Schemes
+
+                            <span>→</span>
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             ACTUAL RESULTS
+
+             This section appears ONLY when schemes exist.
+        ================================================== -->
+
+        {% if result %}
+
+        <section class="results-section">
+
+
+            <div class="results-header">
+
+                <div>
+
+                    <div class="small-label">
+                        YOUR RESULTS
+                    </div>
+
+                    <h2>
+                        Schemes You May Be Eligible For
+                    </h2>
+
+                    <p>
+                        These schemes match the information
+                        provided in your profile.
+                    </p>
+
+                </div>
+
+
+                <div class="result-count">
+
+                    {{ result|length }}
+
+                    <span>
+                        matching schemes
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- FILTERS -->
+
+            <div class="result-toolbar">
+
+                <div class="filter-list">
+
+                    <button class="filter active">
+                        All Schemes
+                    </button>
+
+                    <button class="filter">
+                        Education
+                    </button>
+
+                    <button class="filter">
+                        Financial
+                    </button>
+
+                    <button class="filter">
+                        Employment
+                    </button>
+
+                    <button class="filter">
+                        Women
+                    </button>
+
+                </div>
+
+
+                <select class="sort-select">
+
+                    <option>
+                        Best Match
+                    </option>
+
+                    <option>
+                        Highest Benefit
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- SCHEME CARDS -->
+
+            <div class="scheme-grid">
+
+{% for scheme in result %}
+
+<article class="scheme-card">
+
+    <div class="scheme-card-top">
+
+        <div class="scheme-icon">
+            ₹
+        </div>
+
+        <div class="scheme-title">
+
+            <div class="scheme-category">
+                {% if scheme.fields.schemeCategory %}
+                    {{ scheme.fields.schemeCategory[0] }}
+                {% else %}
+                    GOVERNMENT SCHEME
+                {% endif %}
+            </div>
+
+            <h3>
+                {{ scheme.fields.schemeName }}
+            </h3>
+
+        </div>
+
+    </div>
+
+
+    <p class="scheme-description">
+        {{ scheme.fields.briefDescription }}
+    </p>
+
+
+    {% if scheme.fields.tags %}
+
+    <div class="match-heading">
+        RELATED BENEFITS
+    </div>
+
+    <div class="match-reasons">
+
+        {% for tag in scheme.fields.tags %}
+
+        <span>
+            ✓ {{ tag }}
+        </span>
+
+        {% endfor %}
+
+    </div>
+
     {% endif %}
-  </body>
+
+
+    <div class="scheme-card-bottom">
+
+        <div class="match-score">
+            <span></span>
+            Matching Scheme
+        </div>
+
+
+        {% if scheme.fields.slug %}
+
+        <a
+            href="https://www.myscheme.gov.in/schemes/{{ scheme.fields.slug }}"
+            target="_blank"
+            rel="noopener noreferrer">
+
+            View Details →
+
+        </a>
+
+        {% endif %}
+
+    </div>
+
+</article>
+
+{% endfor %}
+
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+    </main>
+
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        Government Scheme Finder
+
+        <span>•</span>
+
+        Find benefits based on your profile
+
+    </footer>
+
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+
+        /* =================================================
+           MODE SWITCH
+        ================================================= */
+
+        function showForm() {
+
+            document
+                .getElementById("formMode")
+                .style.display = "block";
+
+
+            document
+                .getElementById("textMode")
+                .style.display = "none";
+
+
+            document
+                .getElementById("formModeBtn")
+                .classList.add("active");
+
+
+            document
+                .getElementById("textModeBtn")
+                .classList.remove("active");
+
+        }
+
+
+        function showTextMode() {
+
+            document
+                .getElementById("formMode")
+                .style.display = "none";
+
+
+            document
+                .getElementById("textMode")
+                .style.display = "block";
+
+
+            document
+                .getElementById("textModeBtn")
+                .classList.add("active");
+
+
+            document
+                .getElementById("formModeBtn")
+                .classList.remove("active");
+
+        }
+
+
+
+        /* =================================================
+           FORM → NATURAL LANGUAGE QUERY
+
+           This keeps the existing backend compatible.
+        ================================================= */
+
+        document
+            .getElementById("profileForm")
+            .addEventListener(
+                "submit",
+                function () {
+
+                    const values = [
+
+                        ["age", document.getElementById("age").value],
+
+                        ["gender", document.getElementById("gender").value],
+
+                        ["state", document.getElementById("state").value],
+
+                        ["residence", document.getElementById("residence").value],
+
+                        ["category", document.getElementById("category").value],
+
+                        ["annual income", document.getElementById("income").value],
+
+                        ["BPL", document.getElementById("bpl").value],
+
+                        ["disability", document.getElementById("disability").value],
+
+                        ["education", document.getElementById("education").value],
+
+                        ["occupation", document.getElementById("occupation").value],
+
+                        ["student", document.getElementById("student").value],
+
+                        ["farmer", document.getElementById("farmer").value],
+
+                        ["senior citizen", document.getElementById("senior").value],
+
+                        ["marital status", document.getElementById("marital").value]
+
+                    ];
+
+
+                    const query = values
+
+                        .filter(item => item[1])
+
+                        .map(item => item[0] + ": " + item[1])
+
+                        .join(", ");
+
+
+                    document
+                        .getElementById("generatedQuery")
+                        .value = query;
+
+
+                    document
+                        .getElementById("findButton")
+                        .innerHTML =
+                        "Finding schemes...";
+
+
+                    document
+                        .getElementById("findButton")
+                        .disabled = true;
+
+                }
+            );
+
+
+
+        /* =================================================
+           DARK / LIGHT MODE
+        ================================================= */
+
+        const themeToggle =
+            document.getElementById("themeToggle");
+
+
+        const themeIcon =
+            document.getElementById("themeIcon");
+
+
+        const themeText =
+            document.getElementById("themeText");
+
+
+        const savedTheme =
+            localStorage.getItem("scheme-theme") || "dark";
+
+
+        document
+            .documentElement
+            .setAttribute(
+                "data-theme",
+                savedTheme
+            );
+
+
+        function updateThemeButton() {
+
+            const theme =
+                document
+                    .documentElement
+                    .getAttribute("data-theme");
+
+
+            if (theme === "dark") {
+
+                themeIcon.innerText = "☀";
+
+                themeText.innerText =
+                    "Light mode";
+
+            } else {
+
+                themeIcon.innerText = "☾";
+
+                themeText.innerText =
+                    "Dark mode";
+
+            }
+
+        }
+
+
+        updateThemeButton();
+
+
+        themeToggle.addEventListener(
+            "click",
+            function () {
+
+                const current =
+                    document
+                        .documentElement
+                        .getAttribute("data-theme");
+
+
+                const next =
+                    current === "dark"
+                        ? "light"
+                        : "dark";
+
+
+                document
+                    .documentElement
+                    .setAttribute(
+                        "data-theme",
+                        next
+                    );
+
+
+                localStorage.setItem(
+                    "scheme-theme",
+                    next
+                );
+
+
+                updateThemeButton();
+
+            }
+        );
+
+
+
+        /* =================================================
+           RESULT FILTER UI
+        ================================================= */
+
+        const filters =
+            document.querySelectorAll(".filter");
+
+
+        filters.forEach(
+            function (filter) {
+
+                filter.addEventListener(
+                    "click",
+                    function () {
+
+                        filters.forEach(
+                            f =>
+                            f.classList.remove("active")
+                        );
+
+
+                        this.classList.add("active");
+
+                    }
+                );
+
+            }
+        );
+
+
+    </script>
+
+</body>
+
 </html>
