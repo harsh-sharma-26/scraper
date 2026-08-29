@@ -56,26 +56,34 @@ def build_query_filters(user_data):
 
     return filters
 
-
-def fetch_matching_schemes(user_data, page_size=10, page_from=0):
+def extract_scheme_summary(api_response):
     """
-    Actual API call karta hai user ke data ke basis par filtered schemes laata hai
+    Poore myScheme response me se ghus ke sirf schemeName aur
+    schemeDescription nikalta hai, har scheme ke liye ek chhota dictionary bana ke.
+    """
+    if not api_response:
+        return []
+
+    items = api_response.get("data", {}).get("hits", {}).get("items", [])
+
+    summaries = []
+    for item in items:
+        fields = item.get("fields", {})
+
+        summaries.append({
+            "schemeName": fields.get("schemeName", "Naam uplabdh nahi"),
+            "schemeDescription": fields.get("schemeDescription", "Description uplabdh nahi")
+        })
+
+    return summaries
+
+def fetch_matching_schemes(user_data, page_size=20):
+    """
+    Saare matching schemes fetch karta hai, pagination handle karte hue -
+    ek-ek page maangta hai jab tak sab results mil na jayen.
     """
     filters = build_query_filters(user_data)
-    #print(user_data)
-
-    # Python list/dict ko JSON string me convert karo, phir URL-safe encode karo
-    # json.dumps() -> Python object ko JSON text banata hai
     query_json = json.dumps(filters)
-
-    params = {
-        "lang": "en",
-        "q": query_json,      # requests library khud URL-encode kar dega
-        "keyword": "",
-        "sort": "",
-        "from": page_from,
-        "size": page_size
-    }
 
     headers = {
         "accept": "application/json, text/plain, */*",
@@ -84,17 +92,42 @@ def fetch_matching_schemes(user_data, page_size=10, page_from=0):
         "x-api-key": MYSCHEME_API_KEY
     }
 
-    try:
-        response = requests.get(MYSCHEME_API_URL, headers=headers, params=params, timeout=10)
-        response.raise_for_status()   # 4xx/5xx status pe exception raise karega
+    all_schemes = []
+    current_from = 0
 
-        data = response.json()
-        print(data)
-        return data
+    while True:
+        params = {
+            "lang": "en",
+            "q": query_json,
+            "keyword": "",
+            "sort": "",
+            "from": current_from,
+            "size": page_size
+        }
 
-    except requests.exceptions.HTTPError as e:
-        print(f"API ne error diya: {e}")
-        return None
-    except requests.exceptions.RequestException as e:
-        print(f"Network error: {e}")
-        return None
+        try:
+            response = requests.get(MYSCHEME_API_URL, headers=headers, params=params, timeout=10)
+            response.raise_for_status()
+            raw_data = response.json()
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching page from={current_from}: {e}")
+            break   # error aaye to jo abhi tak mila hai wahi return karo, poori list crash na ho
+
+        page_schemes = extract_scheme_summary(raw_data)
+
+        if not page_schemes:
+            break   # is page pe kuch nahi mila, matlab sab schemes mil chuke
+
+        all_schemes.extend(page_schemes)   # naye results ko list me jodo
+
+        # total count nikalo response se, taaki pata chale kab rukna hai
+        total_available = raw_data.get("data", {}).get("hits", {}).get("total", {}).get("value", 0)
+
+        current_from += page_size
+
+        if current_from >= total_available:
+            break   # sab results mil chuke, loop band karo
+
+    return all_schemes
+
+
