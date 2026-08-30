@@ -27,7 +27,7 @@ SENIOR_WORDS = {"senior"}
 def process_words(words_list):
     # sab words ko lowercase kar diya, taaki "Male"/"MALE"/"male" sab match ho
     words = set(word.lower() for word in words_list)
-    sentence = " ".join(words_list).lower() 
+    sentence = " ".join(words_list).lower()
 
     data = {
         "gender": None,

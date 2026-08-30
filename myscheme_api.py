@@ -1,12 +1,10 @@
 import requests
 import json
-import urllib.parse
+import os
 
-import parsing
-
-# Config - agar key change ho to bas yaha update karo
+# Config - agar key change ho to bas yaha update karo (ya .env file me daalo)
 MYSCHEME_API_URL = "https://api.myscheme.gov.in/search/v6/schemes"
-MYSCHEME_API_KEY = "tYTy5eEhlu9rFjyxuCr7ra7ACp4dv1RH8gWuHTDc"
+MYSCHEME_API_KEY = os.getenv("MYSCHEME_API_KEY", "tYTy5eEhlu9rFjyxuCr7ra7ACp4dv1RH8gWuHTDc")
 
 # Hamare extracted fields ko myScheme ke expected identifiers/values se map karna padega
 # kyunki hamara "OBC" myScheme ka poora naam expect kar sakta hai jaise "Other Backward Class (OBC)"
@@ -24,9 +22,10 @@ GENDER_MAP = {
     "Other": "Transgender"
 }
 
+
 def build_query_filters(user_data):
     """
-    user_data (jo tumne extract kiya tha) ko myScheme ke expected
+    user_data (jo parsing.py se extract hua tha) ko myScheme ke expected
     filter format [{"identifier": ..., "value": ...}, ...] me convert karta hai
     """
     filters = []
@@ -56,10 +55,14 @@ def build_query_filters(user_data):
 
     return filters
 
+
 def extract_scheme_summary(api_response):
     """
-    Poore myScheme response me se ghus ke sirf schemeName aur
-    schemeDescription nikalta hai, har scheme ke liye ek chhota dictionary bana ke.
+    Poore myScheme response me se schemes nikalta hai, "fields" wrapper ke
+    andar hi rakhta hai - kyunki frontend template (templates/index.html)
+    scheme.fields.schemeName, scheme.fields.briefDescription,
+    scheme.fields.schemeCategory, scheme.fields.tags, scheme.fields.slug
+    isi nested shape ko expect karti hai.
     """
     if not api_response:
         return []
@@ -71,16 +74,25 @@ def extract_scheme_summary(api_response):
         fields = item.get("fields", {})
 
         summaries.append({
-            "schemeName": fields.get("schemeName", "Naam uplabdh nahi"),
-            "schemeDescription": fields.get("schemeDescription", "Description uplabdh nahi")
+            "fields": {
+                "schemeName": fields.get("schemeName", "Naam uplabdh nahi"),
+                "briefDescription": fields.get("briefDescription", "Description uplabdh nahi"),
+                "schemeCategory": fields.get("schemeCategory", []),
+                "tags": fields.get("tags", []),
+                "slug": fields.get("slug", "")
+            }
         })
 
     return summaries
+
 
 def fetch_matching_schemes(user_data, page_size=20):
     """
     Saare matching schemes fetch karta hai, pagination handle karte hue -
     ek-ek page maangta hai jab tak sab results mil na jayen.
+
+    Return: list of {"fields": {...}} dictionaries (already processed,
+    ready to pass directly to render_template).
     """
     filters = build_query_filters(user_data)
     query_json = json.dumps(filters)
@@ -129,5 +141,3 @@ def fetch_matching_schemes(user_data, page_size=20):
             break   # sab results mil chuke, loop band karo
 
     return all_schemes
-
-
