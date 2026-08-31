@@ -62,7 +62,7 @@ Government-Scheme-Finder/
 ```bash
 git clone https://github.com/harsh-sharma-26/scraper.git
 cd scraper
-git checkout harsh-sharma
+git checkout main
 ```
 
 2. Create and activate a virtual environment
