@@ -1,4 +1,4 @@
-![image](document/diagrams/cover.png)
+![image](document/diagrams/coverpage.png)
 # Government Scheme Finder
 
 ## Overview
@@ -31,25 +31,28 @@ The Government Scheme Finder is a Flask-based web application that helps users d
 ![System Architecture](document/diagrams/flow.png)
 
 ## Project Structure
-Government-Scheme-Finder
-│
+```text
+Government-Scheme-Finder/
 ├── app.py
 ├── parsing.py
 ├── myscheme_api.py
-│
 ├── templates/
-│ └── index.html
-│
+│   └── index.html
 ├── static/
-│ └── style.css
-│
-├── docs/
-│ └── diagrams/
-│ └── system_architecture.png
-│
-├── requirements.txt
+│   └── style.css
+├── document/
+│   ├── diagrams/
+│   │   ├── coverpage.png
+│   │   ├── flow.png
+│   │   ├── input.png
+│   │   ├── moreinput.png
+│   │   ├── prompt.png
+│   │   └── schemes.png
+│   └── report_doc.pdf
 ├── README.md
-└── LICENSE
+├── LICENSE
+└── .gitignore
+```
 
 
 ## How to Run
