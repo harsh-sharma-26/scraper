@@ -81,9 +81,11 @@ pip install flask requests
 4. Set the MyScheme API key
 
 ```bash
-export MYSCHEME_API_KEY="inspect --> network tab --> schemes?lang=eng.... File --> headers --> x-api-key at the bottom"
+export MYSCHEME_API_KEY="your api key here "
 ```
-
+```bash
+inspect --> network tab --> schemes?lang=eng.... File --> headers --> x-api-key at the bottom
+```
 5. Run the application
 
 ```bash
